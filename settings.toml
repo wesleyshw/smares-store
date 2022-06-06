@@ -1,0 +1,19 @@
+[default]
+SECRET_KEY = "@jinja {{env.SECRET_KEY}}"
+SQLALCHEMY_TRACK_MODIFICATIONS = false
+
+MAIL_SENDER="@jinja {{env.MAIL_SENDER}}"
+MAIL_SERVER="@jinja {{env.MAIL_SERVER}}"
+MAIL_PORT="@jinja {{env.MAIL_PORT}}"
+MAIL_USERNAME="@jinja {{env.MAIL_USERNAME}}"
+MAIL_PASSWORD="@jinja {{env.MAIL_PASSWORD}}"
+MAIL_USE_SSL=true
+
+[development]
+SQLALCHEMY_DATABASE_URI="@jinja {{env.DB_DEV_URI}}"
+
+[production]
+SQLALCHEMY_DATABASE_URI="@jinja {{env.DB_URI}}"
+
+[testing]
+SQLALCHEMY_DATABASE_URI="sqlite://"

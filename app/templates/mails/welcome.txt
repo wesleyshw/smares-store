@@ -1,0 +1,3 @@
+Olá, {{ email }}
+
+Obrigado por se registrar na Smares Stores.

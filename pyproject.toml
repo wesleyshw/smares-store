@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "smares-store.com"
+version = "0.1.0"
+description = "API REST de um e-commerce com Python e Mercado Pago"
+authors = ["Wesley Júnior <agarwesley19@gmail.com>"]
+license = "MIT License"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Flask-RESTful = "^0.3.9"
+Flask-SQLAlchemy = "^2.5.1"
+Flask-Migrate = "^3.1.0"
+Flask-Cors = "^3.0.10"
+dynaconf = "^3.1.8"
+Flask-JWT-Extended = "^4.4.1"
+Flask-Mail = "^0.9.1"
+python-slugify = "^6.1.2"
+mysql-connector-python = "^8.0.29"
+mysqlclient = "^2.1.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+python-dotenv = "^0.20.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
