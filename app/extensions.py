@@ -11,15 +11,16 @@ mail = Mail()
 
 def init_app(app):
     FlaskDynaconf(app)
-    JWTManager(app)
-    CORS(app)
-
     db.init_app(app)
-    Migrate(app)
     mail.init_app(app)
-    from app.models import User
+
+    Migrate(app, db)
+    CORS(app)
+    JWTManager(app)
+
+    from app.models import Category, Product, User
 
     @app.shell_context_processor
     def context_processor():
 
-        return dict(app=app, db=db, User=User)
+        return dict(app=app, db=db, User=User, Product=Product, Category=Category)
