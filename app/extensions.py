@@ -7,16 +7,17 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 mail = Mail()
+jwt = JWTManager()
 
 
 def init_app(app):
     FlaskDynaconf(app)
     db.init_app(app)
+    jwt.init_app(app)
     mail.init_app(app)
 
     Migrate(app, db)
     CORS(app)
-    JWTManager(app)
 
     from app.models import Category, Product, User
 

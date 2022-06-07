@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from app.enums import EStatus
 from app.extensions import db
 
 
@@ -10,6 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(84), nullable=False, unique=True, index=True)
     password = db.Column(db.String(255), nullable=False)
+    items = db.relationship("Item", backref="user", uselist=True)
 
     def __repr__(self):
         return self.email
@@ -32,6 +33,7 @@ class Product(db.Model):
     description = db.Column(db.Text, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
     created_at = db.Column(db.DateTime, default=datetime.now)
+    items = db.relationship("Item", backref="product", uselist=True)
 
     def __repr__(self):
         return self.name
@@ -52,3 +54,30 @@ class Category(db.Model):
 
     def __repr__(self):
         return self.name
+
+
+class Order(db.Model):
+    __tablename__ = "orders"
+
+    id = db.Column(db.Integer, primary_key=True)
+    reference_id = db.Column(db.String(130), nullable=False)
+    status = db.Column(db.String(40), default=EStatus.OPENED.value, nullable=False)
+    item = db.relationship("Item", backref="order", uselist=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+
+    def __repr__(self):
+        return f"order number:{self.reference_id}"
+
+
+class Item(db.Model):
+    __tablename__ = "items"
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey("orders.id"), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"order number: ${self.order.number} quantity: {self.quantity}"

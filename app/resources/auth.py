@@ -35,7 +35,6 @@ class Login(Resource):
 
 class Register(Resource):
     def post(self):
-
         parser = reqparse.RequestParser()
         parser.add_argument("email", required=True, help="o campo email é obrigatório")
         parser.add_argument(
