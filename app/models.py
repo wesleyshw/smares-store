@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.extensions import db
 
 
@@ -29,7 +31,7 @@ class Product(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"))
-    item = db.relationship("OrderItem", backref="product")
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     def __repr__(self):
         return self.name

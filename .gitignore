@@ -17,4 +17,4 @@ __pypackages__/
 .env
 
 # vscode configs
-*.log
+.vscode
