@@ -14,7 +14,9 @@ class Create(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument(
-            "product_id", required=True, help="o campo product_id é obrigatório"
+            "product_id",
+            required=True,
+            help="o campo product_id é obrigatório",
         )
         parser.add_argument(
             "quatity", required=True, help="o campo quatity é obrigatório"

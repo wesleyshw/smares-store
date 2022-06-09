@@ -94,7 +94,9 @@ class Order(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     reference_id = db.Column(db.String(130), nullable=False)
-    status = db.Column(db.String(40), default=EStatus.OPENED.value, nullable=False)
+    status = db.Column(
+        db.String(40), default=EStatus.OPENED.value, nullable=False
+    )
     item = db.relationship("Item", backref="order", uselist=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
@@ -106,9 +108,13 @@ class Item(db.Model):
     __tablename__ = "items"
 
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
+    product_id = db.Column(
+        db.Integer, db.ForeignKey("products.id"), nullable=False
+    )
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey("orders.id"), nullable=False)
+    order_id = db.Column(
+        db.Integer, db.ForeignKey("orders.id"), nullable=False
+    )
     price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 

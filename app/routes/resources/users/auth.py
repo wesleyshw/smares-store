@@ -36,7 +36,9 @@ class Login(Resource):
 class Register(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument("email", required=True, help="o campo email é obrigatório")
+        parser.add_argument(
+            "email", required=True, help="o campo email é obrigatório"
+        )
         parser.add_argument(
             "password", required=True, help="o campo password é obrigatório"
         )
@@ -53,7 +55,10 @@ class Register(Resource):
         try:
             db.session.commit()
             send_mail(
-                "Bem vindo(a) à Smares Store", user.email, "welcome", email=user.email
+                "Bem vindo(a) à Smares Store",
+                user.email,
+                "welcome",
+                email=user.email,
             )
             return {"success": "usuário registrado com sucesso."}, 201
         except Exception as e:
@@ -66,7 +71,9 @@ class Register(Resource):
 class ForgetPassword(Resource):
     def post(self):
         parser = reqparse.RequestParser(trim=True)
-        parser.add_argument("email", required=True, help="o campo email é obrigatório")
+        parser.add_argument(
+            "email", required=True, help="o campo email é obrigatório"
+        )
         args = parser.parse_args()
 
         user = User.query.filter_by(email=args.email).first()
@@ -77,5 +84,10 @@ class ForgetPassword(Resource):
         user.password = generate_password_hash(temp_password)
         db.session.add(user)
         db.session.commit()
-        send_mail("Recuperação de conta", user.email, "forgot-password", temp_password)
+        send_mail(
+            "Recuperação de conta",
+            user.email,
+            "forgot-password",
+            temp_password,
+        )
         return {"success", "E-mail enviado com sucesso."}, 200

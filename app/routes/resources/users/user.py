@@ -10,7 +10,9 @@ class Profile(Resource):
     def put(self):
         parser = reqparse.RequestParser()
         parser.add_argument(
-            "first_name", required=True, help="o campo first_name é obrigatório"
+            "first_name",
+            required=True,
+            help="o campo first_name é obrigatório",
         )
         parser.add_argument(
             "last_name", required=True, help="o campo last_name é obrigatório"
