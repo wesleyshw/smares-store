@@ -11,6 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(84), nullable=False, unique=True, index=True)
     password = db.Column(db.String(255), nullable=False)
     items = db.relationship("Item", backref="user", uselist=True)
+    profile = db.relationship("Profile", backref="user", uselist=False)
 
     def __repr__(self):
         return self.email
@@ -18,6 +19,21 @@ class User(db.Model):
     @classmethod
     def find_by_email(cls, email):
         return User.query.filter_by(email=email).first()
+
+
+class Profile(db.Model):
+
+    __tablename__ = "profiles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(60), nullable=False)
+    last_name = db.Column(db.String(60), nullable=False)
+    cpf = db.Column(db.String(60), nullable=False, unique=True, index=True)
+    phone = db.Column(db.String(60), nullable=False, unique=True, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+    def __repr__(self):
+        return self.first_name + self.last_name
 
 
 class Product(db.Model):
@@ -80,4 +96,4 @@ class Item(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return f"order number: ${self.order.number} quantity: {self.quantity}"
+        return f"order number: ${self.order.number} quantity: {self.quantity} user: {self.user.profile.first_name} {self.user.profile.last_name}"
