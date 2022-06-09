@@ -41,7 +41,6 @@ class Register(Resource):
             "password", required=True, help="o campo password é obrigatório"
         )
         args = parser.parse_args()
-
         user = User.query.filter_by(email=args.email).first()
         if user:
             return {"error": "e-mail já registrado."}, 400

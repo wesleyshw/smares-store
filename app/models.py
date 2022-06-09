@@ -3,6 +3,23 @@ from app.enums import EStatus
 from app.extensions import db
 
 
+class UserAdmin(db.Model):
+
+    __tablename__ = "users_admins"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=True)
+    email = db.Column(db.String(84), nullable=False, unique=True, index=True)
+    password = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return self.email
+
+    @classmethod
+    def find_by_email(cls, email):
+        return UserAdmin.query.filter_by(email=email).first()
+
+
 class User(db.Model):
 
     __tablename__ = "users"

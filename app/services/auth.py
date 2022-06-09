@@ -8,7 +8,6 @@ from app.models import User
 def msg(type, msg, code):
     message = jsonify({"type": type, "msg": msg, "code": code})
     response = make_response(message, code)
-    # response.headers["Content-Type"] = "application/json"
     return response
 
 
@@ -19,7 +18,7 @@ def user_lookup_callback(_jwt_header, jwt_data):
     return User.query.filter_by(id=id).one_or_none()
 
 
-def auth(optional=False):
+def jwt_auth(optional=False):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
@@ -27,9 +26,16 @@ def auth(optional=False):
             if hasattr(current_app, "ensure_sync") and callable(
                 getattr(current_app, "ensure_sync", None)
             ):
+                # checar o valor da variável user caso for o token_hex
+                # do determinado tipo de usuáriofazer a validação caso
+                # contrário o retornar uma response de redirecionamento,
+                # ou então vai retornar acesso negado.
+                if user:
+                    return current_app.ensure_sync(fn)(*args, **kwargs)
                 if not user:
                     return msg("error", "Acesso negado, faça o login.", 401)
-                return current_app.ensure_sync(fn)(*args, **kwargs)
+                return msg("error", "Acesso negado, faça o login.", 401)
+
             return fn(*args, **kwargs)
 
         return decorator
