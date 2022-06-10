@@ -31,3 +31,5 @@ user_items_fields = {
     "order": fields.Nested(user_orders_fields),
     "product": fields.Nested(product_fields),
 }
+
+profile_fields = {}

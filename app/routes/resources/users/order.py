@@ -4,7 +4,7 @@ from random import getrandbits
 from app.extensions import db
 from app.models import Item, Order, Product
 from app.schemas import order_fields
-from app.services.auth import jwt_auth
+from app.services.all.auth import jwt_auth
 from flask_jwt_extended import current_user
 from flask_restful import Resource, marshal, reqparse
 
