@@ -1,4 +1,4 @@
-## Smares Stores 🛒
+# Smares Stores 🛒
 <h5>API REST de um e-commerce com Python e Mercado Pago no método de pagamento.</h5>
 <br>
 
