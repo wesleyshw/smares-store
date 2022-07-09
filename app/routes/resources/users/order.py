@@ -7,21 +7,18 @@ from app.schemas import order_fields
 from app.services.all.auth import jwt_auth
 from flask_jwt_extended import current_user
 from flask_restful import Resource, marshal, reqparse
+from app.services.users.args import order_create_args
+
+from app.services.users.parsers import order_create_prs
 
 
 class Create(Resource):
     @jwt_auth()
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument(
-            "product_id",
-            required=True,
-            help="o campo product_id é obrigatório",
-        )
-        parser.add_argument(
-            "quatity", required=True, help="o campo quatity é obrigatório"
-        )
-        args = parser.parse_args()
+        args = order_create_prs()
+        check = order_create_args(args)
+        if check:
+            return check
         if not current_user:
             return {"error": "Acesso negado, faça o login."}, 400
 

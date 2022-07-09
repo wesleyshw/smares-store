@@ -1,8 +1,11 @@
 import logging
+
 from app.extensions import db
 from app.models import Profile, User
-from app.schemas import user_items_fields, profile_fields
+from app.schemas import profile_fields, user_items_fields
 from app.services.all.auth import jwt_auth
+from app.services.users.args import *
+from app.services.users.parsers import *
 from flask_jwt_extended import current_user
 from flask_restful import Resource, marshal, reqparse
 
@@ -10,22 +13,10 @@ from flask_restful import Resource, marshal, reqparse
 class Profile(Resource):
     @jwt_auth()
     def put(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument(
-            "first_name",
-            required=True,
-            help="o campo first_name é obrigatório",
-        )
-        parser.add_argument(
-            "last_name", required=True, help="o campo last_name é obrigatório"
-        )
-        parser.add_argument(
-            "cpf", required=True, help="o campo cpf é obrigatório"
-        )
-        parser.add_argument(
-            "phone", required=True, help="o campo phone é obrigatório"
-        )
-        args = parser.parse_args()
+        args = profile_prs()
+        check = profile_args(args)
+        if check:
+            return check
         if not current_user:
             return {"error": "Acesso negado. faça o login."}, 400
         if not current_user.profile:
