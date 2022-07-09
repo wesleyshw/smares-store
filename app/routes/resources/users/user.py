@@ -19,8 +19,12 @@ class Profile(Resource):
         parser.add_argument(
             "last_name", required=True, help="o campo last_name é obrigatório"
         )
-        parser.add_argument("cpf", required=True, help="o campo cpf é obrigatório")
-        parser.add_argument("phone", required=True, help="o campo phone é obrigatório")
+        parser.add_argument(
+            "cpf", required=True, help="o campo cpf é obrigatório"
+        )
+        parser.add_argument(
+            "phone", required=True, help="o campo phone é obrigatório"
+        )
         args = parser.parse_args()
         if not current_user:
             return {"error": "Acesso negado. faça o login."}, 400

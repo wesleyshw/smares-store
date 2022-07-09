@@ -1,14 +1,10 @@
-from flask_jwt_extended import verify_jwt_in_request
 from functools import wraps
-from flask import current_app, jsonify, make_response
+
 from app.extensions import db, jwt
 from app.models import User
-
-
-def msg(type, msg, code):
-    message = jsonify({"type": type, "msg": msg, "code": code})
-    response = make_response(message, code)
-    return response
+from app.services.all.response import msg
+from flask import current_app
+from flask_jwt_extended import verify_jwt_in_request
 
 
 @jwt.user_lookup_loader

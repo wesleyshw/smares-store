@@ -6,6 +6,8 @@ from datetime import timedelta
 from app.extensions import db
 from app.models import User
 from app.services.all.mail import send_mail
+from app.services.users.parsers import *
+from app.services.users.args import *
 from flask import request
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource, reqparse
@@ -35,12 +37,10 @@ class Login(Resource):
 
 class Register(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument("email", required=True, help="o campo email é obrigatório")
-        parser.add_argument(
-            "password", required=True, help="o campo password é obrigatório"
-        )
-        args = parser.parse_args()
+        args = register_prs()
+        check = register_args(args)
+        if check:
+            return check
         user = User.query.filter_by(email=args.email).first()
         if user:
             return {"error": "e-mail já registrado."}, 400
@@ -68,9 +68,10 @@ class Register(Resource):
 # Recuperação de e-mail temporária
 class ForgetPassword(Resource):
     def post(self):
-        parser = reqparse.RequestParser(trim=True)
-        parser.add_argument("email", required=True, help="o campo email é obrigatório")
-        args = parser.parse_args()
+        args = forgot_passw_prs()
+        check = forgot_passw_args(args)
+        if check:
+            return check
 
         user = User.query.filter_by(email=args.email).first()
         if not user:
