@@ -25,7 +25,9 @@ def upgrade():
         sa.Column("slug", sa.String(length=45), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_categories_slug"), "categories", ["slug"], unique=True)
+    op.create_index(
+        op.f("ix_categories_slug"), "categories", ["slug"], unique=True
+    )
     op.create_table(
         "users",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -49,7 +51,9 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_products_slug"), "products", ["slug"], unique=True)
+    op.create_index(
+        op.f("ix_products_slug"), "products", ["slug"], unique=True
+    )
     # ### end Alembic commands ###
 
 

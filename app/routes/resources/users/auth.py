@@ -25,7 +25,7 @@ class Login(Resource):
         email, password = b64decode(code).decode().split(":")
 
         user = User.query.filter_by(email=email).first()
-        if not user or check_password_hash(user.password, password):
+        if not user or not check_password_hash(user.password, password):
             return {"error": "login e senha inválidos."}, 400
 
         token = create_access_token(
@@ -52,12 +52,12 @@ class Register(Resource):
 
         try:
             db.session.commit()
-            send_mail(
-                "Bem vindo(a) à Smares Store",
-                user.email,
-                "welcome",
-                email=user.email,
-            )
+            # send_mail(
+            #     "Bem vindo(a) à Smares Store",
+            #     user.email,
+            #     "welcome",
+            #     email=user.email,
+            # )
             return {"success": "usuário registrado com sucesso."}, 201
         except Exception as e:
             db.session.rollback()
