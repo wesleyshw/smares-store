@@ -18,7 +18,7 @@ class Profile(Resource):
         if check:
             return check
         if not current_user:
-            return {"error": "Acesso negado. faça o login."}, 400
+            return msg("error", "Acesso negado. faça o login.", 400)
         if not current_user.profile:
             current_user.profile = Profile()
 
@@ -33,12 +33,12 @@ class Profile(Resource):
         except Exception as e:
             logging.critical(str(e))
             db.session.rollback()
-            return {"error": "Não foi possível preencher o perfil."}, 500
+            return msg("error", "Não foi possível atualizar o perfil.", 500)
 
 
 class Orders(Resource):
     @jwt_auth()
     def get(self):
         if not current_user:
-            return {"error": "Acesso negado, faça o login."}, 400
+            return msg("error", "Acesso negado, faça o login.", 400)
         return marshal(current_user.items, user_items_fields, "orders")

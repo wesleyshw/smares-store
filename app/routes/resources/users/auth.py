@@ -1,3 +1,4 @@
+import email
 import logging
 import secrets
 from base64 import b64decode
@@ -17,22 +18,26 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class Login(Resource):
     def get(self):
         if not request.headers.get("Authorization"):
-            return {"error": "login e senha inválidos."}, 400
+            return msg("error", "preencha o Headers com Authorization.", 400)
         basic, code = request.headers["Authorization"].split(" ")
         if not basic.lower() == "basic":
-            return {"error": "Authorization mal formatado!"}, 400
+            return msg("error", "Authorization mal formatado!", 400)
 
         email, password = b64decode(code).decode().split(":")
+        if email == "":
+            return msg("error", "O campo de email é obrigatório.", 400)
+        if password == "":
+            return msg("error", "O campo de password é obrigatório.", 400)
 
         user = User.query.filter_by(email=email).first()
-        if not user or not check_password_hash(user.password, password):
-            return {"error": "login e senha inválidos."}, 400
+        if not user:
+            return msg("error", "e-mail não encontrado.", 404)
+        if not check_password_hash(user.password, password):
+            return msg("error", "senha incorreta.", 400)
 
-        token = create_access_token(
-            {"id": user.id}, expires_delta=timedelta(minutes=30)
-        )
+        token = create_access_token({"id": user.id}, expires_delta=timedelta(days=30))
 
-        return {"success": token}, 201
+        return msg("success", token, 201)
 
 
 class Register(Resource):
@@ -52,12 +57,12 @@ class Register(Resource):
 
         try:
             db.session.commit()
-            # send_mail(
-            #     "Bem vindo(a) à Smares Store",
-            #     user.email,
-            #     "welcome",
-            #     email=user.email,
-            # )
+            send_mail(
+                "Bem vindo(a) à Smares Store",
+                user.email,
+                "welcome",
+                email=user.email,
+            )
             return {"success": "usuário registrado com sucesso."}, 201
         except Exception as e:
             db.session.rollback()
