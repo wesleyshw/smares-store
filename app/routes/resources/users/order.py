@@ -5,11 +5,10 @@ from app.extensions import db
 from app.models import Item, Order, Product
 from app.schemas import order_fields
 from app.services.all.auth import jwt_auth
+from app.services.users.args import *
+from app.services.users.parsers import *
 from flask_jwt_extended import current_user
 from flask_restful import Resource, marshal, reqparse
-from app.services.users.args import order_create_args
-
-from app.services.users.parsers import order_create_prs
 
 
 class Create(Resource):
@@ -20,13 +19,13 @@ class Create(Resource):
         if check:
             return check
         if not current_user:
-            return {"error": "Acesso negado, faça o login."}, 400
+            return msg("error", "Acesso negado, faça o login.", 400)
 
         product = Product.query.get(args.product_id)
         if not product:
-            return {"error": "produto não encontrado!"}, 404
+            return msg("error", "Produto não encontrado!", 404)
         if args.quantity > product.quantity:
-            return {"error": "não possuímos essa quantidade."}, 400
+            return msg("error", "Não possuimos essa quantidade", 400)
 
         try:
             order = Order()
@@ -47,7 +46,7 @@ class Create(Resource):
         except Exception as e:
             logging.critical(str(e))
             db.session.rollback()
-            return {"error": "Não foi possível criar o seu pedido."}, 500
+            return msg("error", "Não foi possível criar o seu pedido.", 500)
 
 
 class Pay(Resource):

@@ -1,4 +1,3 @@
-import email
 import logging
 import secrets
 from base64 import b64decode
@@ -18,7 +17,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class Login(Resource):
     def get(self):
         if not request.headers.get("Authorization"):
-            return msg("error", "preencha o Headers com Authorization.", 400)
+            return msg("error", "Preencha o Headers com Authorization.", 400)
         basic, code = request.headers["Authorization"].split(" ")
         if not basic.lower() == "basic":
             return msg("error", "Authorization mal formatado!", 400)
@@ -31,9 +30,9 @@ class Login(Resource):
 
         user = User.query.filter_by(email=email).first()
         if not user:
-            return msg("error", "e-mail não encontrado.", 404)
+            return msg("error", "E-mail não encontrado.", 404)
         if not check_password_hash(user.password, password):
-            return msg("error", "senha incorreta.", 400)
+            return msg("error", "Senha incorreta.", 400)
 
         token = create_access_token({"id": user.id}, expires_delta=timedelta(days=30))
 
@@ -48,7 +47,7 @@ class Register(Resource):
             return check
         user = User.query.filter_by(email=args.email).first()
         if user:
-            return {"error": "e-mail já registrado."}, 400
+            return msg("error", "E-mail já registrado.", 400)
 
         user = User()
         user.email = args.email
@@ -57,20 +56,21 @@ class Register(Resource):
 
         try:
             db.session.commit()
-            send_mail(
-                "Bem vindo(a) à Smares Store",
-                user.email,
-                "welcome",
-                email=user.email,
-            )
-            return {"success": "usuário registrado com sucesso."}, 201
+            # deixar o send_mail desativado por enquando para testar depois
+            # send_mail(
+            #     "Bem vindo(a) à Smares Store",
+            #     user.email,
+            #     "welcome",
+            #     email=user.email,
+            # )
+            return msg("success", "Usuário registrado com sucesso.", 201)
         except Exception as e:
             db.session.rollback()
             logging.critical(str(e))
-            return {"error": "não foi possível registrar o usuário"}, 500
+            return msg("error", "Não foi possível registrar o usuário.", 500)
 
 
-# Recuperação de e-mail temporária
+# Atualizar a recuperação para duas etapas mais pra frente
 class ForgetPassword(Resource):
     def post(self):
         args = forgot_passw_prs()
@@ -80,7 +80,7 @@ class ForgetPassword(Resource):
 
         user = User.query.filter_by(email=args.email).first()
         if not user:
-            return {"error": "e-mail não encontrado!"}, 404
+            return msg("error", "E-mail não encontrado!", 404)
 
         temp_password = secrets.token_hex(8)
         user.password = generate_password_hash(temp_password)
@@ -92,4 +92,4 @@ class ForgetPassword(Resource):
             "forgot-password",
             temp_password,
         )
-        return {"success", "E-mail enviado com sucesso."}, 200
+        return msg("success", "E-mail enviado com sucesso.", 200)
